@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,7 +23,7 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public User create(@RequestBody User user) throws ValidationException {
+    public User create(@Valid @RequestBody User user) throws ValidationException {
         if (validation(user)) {
             log.setLevel(Level.WARN);
             log.warn("пользователь имеет неверные данные");
@@ -40,7 +41,7 @@ public class UserController {
     }
 
     @PutMapping("/users")
-    public User update(@RequestBody User user) throws ValidationException {
+    public User update(@Valid @RequestBody User user) throws ValidationException {
         if (validation(user) || !users.contains(user)) {
             log.setLevel(Level.WARN);
             log.warn("пользователь имеет неверные данные или пользователя нет в библиотеке");
@@ -58,8 +59,6 @@ public class UserController {
 
     private boolean validation(User user) {
         LocalDate now = LocalDate.now();
-        return user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@") ||
-                user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")
-                || user.getBirthday().isAfter(now);
+        return user.getLogin().contains(" ") || user.getBirthday().isAfter(now);
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,7 +25,7 @@ public class FilmController {
     }
 
     @PostMapping("/films")
-    public Film create(@RequestBody Film film) throws ValidationException {
+    public Film create(@Valid @RequestBody Film film) throws ValidationException {
         if (validation(film)) {
             log.setLevel(Level.WARN);
             log.warn("данные фильма не подходят формату");
@@ -39,7 +40,7 @@ public class FilmController {
     }
 
     @PutMapping("/films")
-    public Film update(@RequestBody Film film) throws ValidationException {
+    public Film update(@Valid @RequestBody Film film) throws ValidationException {
         if (validation(film) || !films.contains(film)) {
             log.setLevel(Level.WARN);
             log.warn("неверные данные фильма");
@@ -53,7 +54,6 @@ public class FilmController {
     }
 
     private boolean validation(Film film) {
-        return film.getName() == null || film.getName().isBlank() || film.getDescription().length() > 200 ||
-                !film.getReleaseDate().isAfter(movieDate) || film.getDuration() <= 0;
+        return film.getDescription().length() > 200 || !film.getReleaseDate().isAfter(movieDate) || film.getDuration() <= 0;
     }
 }

@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -9,51 +8,46 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 public class FilmController {
     Logger log = (Logger) LoggerFactory.getLogger(FilmController.class);
-    final private Set<Film> films = new HashSet<>();
-    final private LocalDate movieDate = LocalDate.of(1895,12,28);
+    final private Map<Integer, Film> films = new HashMap<>();
+    final private LocalDate earliestFilmDate = LocalDate.of(1895,12,28);
     private int id = 1;
 
     @GetMapping("/films")
-    public Set<Film> findAll(){
-        return films;
+    public List<Film> findAll(){
+        return new ArrayList<Film>(films.values());
     }
 
     @PostMapping("/films")
     public Film create(@Valid @RequestBody Film film) throws ValidationException {
         if (validation(film)) {
-            log.setLevel(Level.WARN);
             log.warn("данные фильма не подходят формату");
             throw new ValidationException("фильм имеет неверные данные");
         }
         film.setId(id);
+        films.put(id,film);
         id++;
-        films.add(film);
-        log.setLevel(Level.INFO);
-        log.info("добавлен фильм: {}", films.toString());
+        log.info("добавлен фильм: {}", film.toString());
         return film;
     }
 
     @PutMapping("/films")
     public Film update(@Valid @RequestBody Film film) throws ValidationException {
-        if (validation(film) || !films.contains(film)) {
-            log.setLevel(Level.WARN);
+        if (validation(film) || !films.containsKey(film.getId())) {
             log.warn("неверные данные фильма");
             throw new ValidationException("фильм имеет неверные данные или фильма нет в библиотеке");
         }
-        films.remove(film);
-        films.add(film);
-        log.setLevel(Level.INFO);
+        films.put(film.getId(),film);
         log.info("данные фильма обновлены : {}", film.toString());
         return film;
     }
 
-    private boolean validation(Film film) {
-        return film.getDescription().length() > 200 || !film.getReleaseDate().isAfter(movieDate) || film.getDuration() <= 0;
+    public boolean validation(Film film) {
+        return film.getDescription().length() > 200 || film.getReleaseDate().isBefore(earliestFilmDate) || film.getDuration() <= 0
+                || film.getName().isEmpty() || film.getName().isBlank();
     }
 }

@@ -2,59 +2,105 @@ package ru.yandex.practicum.filmorate.controller;
 
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.*;
 
 @RestController
+@RequestMapping("/users")
 
 public class UserController {
-    final private Set<User> users = new HashSet<>();
-    private final Map<Integer, User> users2 = new HashMap<>();
     Logger log = (Logger) LoggerFactory.getLogger(UserController.class);
-    private int id = 1;
-    @GetMapping("/users")
+    @Autowired
+    UserService userService;
+    @GetMapping
     public List<User> findAll(){
-        return new ArrayList<User>(users2.values());
+        return userService.findAll();
     }
 
-    @PostMapping("/users")
+    @PostMapping
     public User create(@Valid @RequestBody User user) throws ValidationException {
         if (validation(user)) {
             log.warn("пользователь имеет неверные данные");
             throw new ValidationException("пользователь имеет неверные данные");
         }
-        user.setId(id);
         if (user.getName() == null || user.getName().isBlank()){
             user.setName(user.getLogin());
         }
-        users2.put(id,user);
-        id++;
         log.info("добавлен пользователь : {}", user.toString());
-        return user;
+        return userService.create(user);
     }
 
-    @PutMapping("/users")
+    @PutMapping
     public User update(@Valid @RequestBody User user) throws ValidationException {
-        if (validation(user) || !users2.containsKey(user.getId())) {
-            log.warn("пользователь имеет неверные данные или пользователя нет в библиотеке");
-            throw new ValidationException("пользователь имеет неверные данные или пользователя нет в библиотеке");
+        if (validation(user)) {
+            log.warn("пользователь имеет неверные данные");
+            throw new ValidationException("пользователь имеет неверные данные");
         }
         if (user.getName() == null || user.getName().isBlank()){
             user.setName(user.getLogin());
         }
-        users2.put(user.getId(),user);
         log.info("обновлен пользователь : {}", user.toString());
-        return user;
+        return userService.update(user);
+    }
+
+    @PutMapping("/{id}/friends/{friendId}")
+    public Map<Long,Set<Long>> addToFriends(@PathVariable(required = false) Long id,
+                                             @PathVariable(required = false) Long friendId) throws ValidationException {
+        if (idValidation(id)) {
+            throw new ValidationException("id пользователя введено неверно - " + id);
+        }
+        if (idValidation(friendId)) {
+            throw new ValidationException("id пользователя введено неверно - " + friendId);
+        }
+        return userService.addFriend(id,friendId);
+    }
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public Map<Long,Set<Long>> deleteFromFriends(@PathVariable Long id,
+                                                  @PathVariable Long friendId) throws ValidationException {
+        if (idValidation(id)) {
+            throw new ValidationException("id пользователя введено неверно - " + id);
+        }
+        if (idValidation(friendId)) {
+            throw new ValidationException("id пользователя введено неверно - " + friendId);
+        }
+        return userService.deleteFromFriends(id, friendId);
+    }
+
+    @GetMapping("/{id}/friends")
+    public Set<Long> getFriends(@PathVariable Long id) throws ValidationException {
+        if (idValidation(id)) {
+            throw new ValidationException("id пользователя введено неверно - " + id);
+        }
+        return userService.getFriendsIds(id);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public List<Long> getCommonFriends(@PathVariable Long id,
+                                       @PathVariable Long otherId) throws ValidationException {
+        if (idValidation(id)) {
+            throw new ValidationException("id пользователя введено неверно - " + id);
+        }
+        if (idValidation(otherId)) {
+            throw new ValidationException("id пользователя введено неверно - " + otherId);
+        }
+        return userService.getMutualFriends(id,otherId);
     }
 
     public boolean validation(User user) {
         LocalDate now = LocalDate.now();
         return user.getLogin().contains(" ") || user.getBirthday().isAfter(now) || user.getLogin().isBlank() || user.getEmail().isBlank()
                 || !user.getEmail().contains("@");
+    }
+
+    public boolean idValidation(Long id) {
+        return (id == null || id <= 0);
     }
 }

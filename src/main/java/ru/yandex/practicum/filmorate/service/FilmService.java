@@ -1,0 +1,82 @@
+package ru.yandex.practicum.filmorate.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Service
+public class FilmService {
+
+    @Autowired
+    @Qualifier("inMemoryFilm")
+    FilmStorage filmStorage;
+    @Autowired
+    @Qualifier("inMemoryUser")
+    UserStorage userStorage;
+
+    public List<Film> findAll(){
+        return filmStorage.getAllItemsList();
+    }
+
+    public Film create(Film film) {
+        return filmStorage.add(film);
+    }
+
+    public Film update(Film film) {
+        return filmStorage.update(film);
+    }
+
+    public Set<Long> likeFilm(Long filmId, Long userId) {
+        if (!filmStorage.contains(filmId)) {
+            throw new NotFoundException("this id doesn't exist - " + filmId);
+        }
+        if (!userStorage.contains(userId)) {
+            throw new NotFoundException("this id doesn't exist - " + userId);
+        }
+        filmStorage.getItem(filmId).addLike(userId);
+        userStorage.getItem(userId).addLikedFilm(filmId);
+        return filmStorage.getItem(filmId).getLikesIds();
+    }
+
+    public Set<Long> deleteFilmsLike(Long filmId, Long userId) {
+        if (!filmStorage.contains(filmId)) {
+            throw new NotFoundException("this id doesn't exist - " + filmId);
+        }
+        if (!userStorage.contains(userId)) {
+            throw new NotFoundException("this id doesn't exist - " + userId);
+        }
+        filmStorage.getItem(filmId).deleteLike(userId);
+        userStorage.getItem(userId).deleteLikedFilm(filmId);
+        return filmStorage.getItem(filmId).getLikesIds();
+    }
+
+    public List<Film> getMostPopularFilms(int count) {
+        return filmStorage.getAllItemsList().stream().sorted((f1,f2) -> {
+            int f1LikesCount;
+            int f2LikesCount;
+            if (f1.getLikesIds() == null) {
+                f1LikesCount = 0;
+            } else {
+                f1LikesCount = f1.getLikesIds().size();
+            }
+            if (f2.getLikesIds() == null) {
+                f2LikesCount = 0;
+            } else {
+                f2LikesCount = f2.getLikesIds().size();
+            }
+            int comp = f2LikesCount - f1LikesCount;
+            if (comp == 0) {
+                return f2.getId().compareTo(f1.getId());
+            }
+            return comp;
+        }).limit(count).collect(Collectors.toList());
+    }
+}

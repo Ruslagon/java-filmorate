@@ -2,52 +2,85 @@ package ru.yandex.practicum.filmorate.controller;
 
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.*;
 
 @RestController
+@RequestMapping("/films")
 public class FilmController {
     Logger log = (Logger) LoggerFactory.getLogger(FilmController.class);
-    final private Map<Integer, Film> films = new HashMap<>();
     final private LocalDate earliestFilmDate = LocalDate.of(1895,12,28);
-    private int id = 1;
+    @Autowired
+    private FilmService filmService;
 
-    @GetMapping("/films")
+    @GetMapping
     public List<Film> findAll(){
-        return new ArrayList<Film>(films.values());
+        return filmService.findAll();
     }
 
-    @PostMapping("/films")
+    @PostMapping
     public Film create(@Valid @RequestBody Film film) throws ValidationException {
         if (validation(film)) {
             log.warn("данные фильма не подходят формату");
             throw new ValidationException("фильм имеет неверные данные");
         }
-        film.setId(id);
-        films.put(id,film);
-        id++;
         log.info("добавлен фильм: {}", film.toString());
-        return film;
+        return filmService.create(film);
     }
 
-    @PutMapping("/films")
+    @PutMapping
     public Film update(@Valid @RequestBody Film film) throws ValidationException {
-        if (validation(film) || !films.containsKey(film.getId())) {
+        if (validation(film)) {
             log.warn("неверные данные фильма");
-            throw new ValidationException("фильм имеет неверные данные или фильма нет в библиотеке");
+            throw new ValidationException("фильм имеет неверные данные");
         }
-        films.put(film.getId(),film);
         log.info("данные фильма обновлены : {}", film.toString());
-        return film;
+        return filmService.update(film);
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    public Set<Long> likeFilm(@PathVariable(value = "id") Long filmId, @PathVariable Long userId) throws ValidationException {
+        if (idValidation(filmId)) {
+            throw new ValidationException("id фильма введено неверно - " + filmId);
+        }
+        if (idValidation(userId)) {
+            throw new ValidationException("id пользователя введено неверно - " + filmId);
+        }
+        return filmService.likeFilm(filmId, userId);
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public Set<Long> deleteLike(@PathVariable(value = "id") Long filmId, @PathVariable Long userId) throws ValidationException {
+        if (idValidation(filmId)) {
+            throw new ValidationException("id фильма введено неверно - " + filmId);
+        }
+        if (idValidation(userId)) {
+            throw new ValidationException("id пользователя введено неверно - " + userId);
+        }
+        return filmService.deleteFilmsLike(filmId, userId);
+    }
+
+    @GetMapping("/popular")
+    public List<Film> getMostPopularFilms(@RequestParam(value = "count", defaultValue = "10", required = false) int count) {
+        if (idValidation((long)count)) {
+            throw new ValidationException("count введен неверно -" + count);
+        }
+        return filmService.getMostPopularFilms(count);
     }
 
     public boolean validation(Film film) {
         return film.getDescription().length() > 200 || film.getReleaseDate().isBefore(earliestFilmDate) || film.getDuration() <= 0
                 || film.getName().isEmpty() || film.getName().isBlank();
+    }
+
+    public boolean idValidation(Long id) {
+        return (id == null || id <= 0);
     }
 }

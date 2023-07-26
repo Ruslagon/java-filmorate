@@ -7,10 +7,7 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +26,13 @@ public class UserService {
 
     public User update(User user) {
         return userStorage.update(user);
+    }
+
+    public User getUserById(Long id) {
+        if (!userStorage.contains(id)) {
+            throw new NotFoundException("данный пользователь не найден -" + id);
+        }
+        return userStorage.getItem(id);
     }
 
     public Map<Long, Set<Long>> addFriend(Long user1Id, Long user2Id) {
@@ -65,13 +69,25 @@ public class UserService {
         if (!userStorage.contains(id)) {
             throw new NotFoundException("this id doesn't exist - " + id);
         }
-        return userStorage.getItem(id).getFriendsIds();
+        Set<Long> friendsIds = userStorage.getItem(id).getFriendsIds();
+        if (friendsIds == null) {
+            friendsIds = new HashSet<>();
+        }
+        return friendsIds;
+    }
+    public List<User> getFriends(Long id) {
+        Set<Long> friendsIds = getFriendsIds(id);
+        return userStorage.getAllItemsList().stream().sorted((user1,user2) -> {int comp = user1.getId().compareTo(user2.getId());
+        return comp;})
+                .filter(user -> friendsIds.contains(user.getId()))
+                .collect(Collectors.toList());
     }
 
-    public List<Long> getMutualFriends(Long user1Id, Long user2Id) {
+    public List<User> getMutualFriends(Long user1Id, Long user2Id) {
         Set<Long> firstUserList = getFriendsIds(user1Id);
         Set<Long> secondUserList = getFriendsIds(user2Id);
-        return firstUserList.stream().filter(secondUserList::contains).collect(Collectors.toList());
+        Set<Long> commonFriendsId = firstUserList.stream().filter(secondUserList::contains).collect(Collectors.toSet());
+        return userStorage.getAllItemsList().stream().filter(user -> commonFriendsId.contains(user.getId())).collect(Collectors.toList());
     }
 
 }

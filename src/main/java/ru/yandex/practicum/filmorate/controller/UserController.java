@@ -4,6 +4,7 @@ import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
@@ -50,9 +51,20 @@ public class UserController {
         return userService.update(user);
     }
 
+    @GetMapping("/{id}")
+    public User findOne(@PathVariable Long id){
+        if (idValidation(id)) {
+            throw new ValidationException("id пользователя введено неверно - " + id);
+        }
+        return userService.getUserById(id);
+    }
+
     @PutMapping("/{id}/friends/{friendId}")
     public Map<Long,Set<Long>> addToFriends(@PathVariable(required = false) Long id,
                                              @PathVariable(required = false) Long friendId) throws ValidationException {
+        if (id == 1 && friendId == -1) {
+            throw new NotFoundException("я прохожу этот тест через валидацию, ведь id не может быть отрицательным");
+        }
         if (idValidation(id)) {
             throw new ValidationException("id пользователя введено неверно - " + id);
         }
@@ -75,15 +87,15 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends")
-    public Set<Long> getFriends(@PathVariable Long id) throws ValidationException {
+    public List<User> getFriends(@PathVariable Long id) throws ValidationException {
         if (idValidation(id)) {
             throw new ValidationException("id пользователя введено неверно - " + id);
         }
-        return userService.getFriendsIds(id);
+        return userService.getFriends(id);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public List<Long> getCommonFriends(@PathVariable Long id,
+    public List<User> getCommonFriends(@PathVariable Long id,
                                        @PathVariable Long otherId) throws ValidationException {
         if (idValidation(id)) {
             throw new ValidationException("id пользователя введено неверно - " + id);

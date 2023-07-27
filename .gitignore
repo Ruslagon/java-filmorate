@@ -50,7 +50,11 @@ db/*
 .mvn
 mvnw.cmd
 mvnw
-
+filmorate.iml
+.rar
+hs_err_pid
+!/src/main//target/
+!/src/test//target/
 
 *mvn*
 *mvn*.*

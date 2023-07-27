@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class InMemoryStorage<T extends Item> implements Storage<T>{
+public class InMemoryStorage<T extends Item> implements Storage<T> {
 
     Map<Long,T> storage;
     Long globalId;
@@ -51,7 +51,7 @@ public class InMemoryStorage<T extends Item> implements Storage<T>{
         return storage.get(id);
     }
 
-    public List<T> getAllItemsList(){
+    public List<T> getAllItemsList() {
         return new ArrayList<>(storage.values());
     }
 }

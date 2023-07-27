@@ -22,7 +22,7 @@ public class FilmService {
     @Qualifier("inMemoryUser")
     UserStorage userStorage;
 
-    public List<Film> findAll(){
+    public List<Film> findAll() {
         return filmStorage.getAllItemsList();
     }
 

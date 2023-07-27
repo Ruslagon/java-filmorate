@@ -21,7 +21,7 @@ class FilmorateApplicationTests {
 		FilmController controller = new FilmController();
 		LocalDate beforeFirstMovieDate = LocalDate.of(1895,12,27);
 		LocalDate firstMovieDate = LocalDate.of(1895,12,28);
-		LocalDate AfterFirstMovieDate = LocalDate.of(1895,12,29);
+		LocalDate afterFirstMovieDate = LocalDate.of(1895,12,29);
 		String smallDescription = "description";
 		String symbolsOf200Description = "��� 200 �������� ��� 200 �������� ��� 200 �������� ��� 200 �������� ��� 200 �������� ��� 200 �������� ��� 200 �������� ��� 200 �������� ��� 200 �������� ��� 200 �������� ��� 200 �������� ��� 200 ����?";
 		String tooBigDescription = "��� �� 200 �������� ��� 200 �������� ��� 200 �������� ��� 200 �������� ��� 200 �������� ��� 200 �������� ��� 200 �������� ��� 200 �������� ��� 200 �������� ��� 200 �������� ��� 200 �������� ��� 200 ����?";
@@ -30,15 +30,15 @@ class FilmorateApplicationTests {
 		int plusDuration = 120;
 		String name = "name";
 		String blankName = "";
-		assertFalse(controller.validation(new Film(name,smallDescription, AfterFirstMovieDate, plusDuration)));
+		assertFalse(controller.validation(new Film(name,smallDescription, afterFirstMovieDate, plusDuration)));
 		assertFalse(controller.validation(new Film(name,smallDescription, firstMovieDate, plusDuration)));
-		assertFalse(controller.validation(new Film(name,symbolsOf200Description, AfterFirstMovieDate, plusDuration)));
+		assertFalse(controller.validation(new Film(name,symbolsOf200Description, afterFirstMovieDate, plusDuration)));
 
 		assertTrue(controller.validation(new Film(name,smallDescription, beforeFirstMovieDate, plusDuration)));
-		assertTrue(controller.validation(new Film(name,tooBigDescription, AfterFirstMovieDate, plusDuration)));
-		assertTrue(controller.validation(new Film(name,smallDescription, AfterFirstMovieDate, minusDuration)));
-		assertTrue(controller.validation(new Film(name,smallDescription, AfterFirstMovieDate, zeroDuration)));
-		assertTrue(controller.validation(new Film(blankName, smallDescription, AfterFirstMovieDate, plusDuration)));
+		assertTrue(controller.validation(new Film(name,tooBigDescription, afterFirstMovieDate, plusDuration)));
+		assertTrue(controller.validation(new Film(name,smallDescription, afterFirstMovieDate, minusDuration)));
+		assertTrue(controller.validation(new Film(name,smallDescription, afterFirstMovieDate, zeroDuration)));
+		assertTrue(controller.validation(new Film(blankName, smallDescription, afterFirstMovieDate, plusDuration)));
 	}
 
 	@Test

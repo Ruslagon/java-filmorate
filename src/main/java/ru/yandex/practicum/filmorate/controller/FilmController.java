@@ -17,13 +17,12 @@ import java.util.*;
 @RequestMapping("/films")
 public class FilmController {
     Logger log = (Logger) LoggerFactory.getLogger(FilmController.class);
-    final private LocalDate earliestFilmDate = LocalDate.of(1895,12,28);
+    private final LocalDate earliestFilmDate = LocalDate.of(1895,12,28);
     @Autowired
     private FilmService filmService;
 
     @GetMapping
-    public List<Film> findAll(){
-        return filmService.findAll();
+    public List<Film> findAll(){return filmService.findAll();
     }
 
     @PostMapping

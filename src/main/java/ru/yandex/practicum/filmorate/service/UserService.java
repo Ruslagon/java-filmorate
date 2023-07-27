@@ -82,7 +82,7 @@ public class UserService {
         return userStorage.getAllItemsList().stream().sorted((user1,user2) -> {
             int comp = user1.getId().compareTo(user2.getId());
         return comp;
-        } ).filter(user -> friendsIds.contains(user.getId())).collect(Collectors.toList());
+        }).filter(user -> friendsIds.contains(user.getId())).collect(Collectors.toList());
     }
 
     public List<User> getMutualFriends(Long user1Id, Long user2Id) {

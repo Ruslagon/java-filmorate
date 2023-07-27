@@ -2,17 +2,17 @@ package ru.yandex.practicum.filmorate.storage;
 
 import java.util.List;
 
-public interface Storage<Item> {
+public interface Storage<T> {
 
-    Item add(Item item);
+    T add(T t);
 
-    Item delete(Item item);
+    T delete(T t);
 
-    Item update(Item item);
+    T update(T t);
 
     boolean contains(Long id);
 
-    Item getItem(Long id);
+    T getItem(Long id);
 
-    List<Item> getAllItemsList();
+    List<T> getAllItemsList();
 }

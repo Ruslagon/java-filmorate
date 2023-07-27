@@ -20,6 +20,7 @@ public class UserController {
     Logger log = (Logger) LoggerFactory.getLogger(UserController.class);
     @Autowired
     UserService userService;
+
     @GetMapping
     public List<User> findAll(){
         return userService.findAll();
@@ -31,7 +32,7 @@ public class UserController {
             log.warn("пользователь имеет неверные данные");
             throw new ValidationException("пользователь имеет неверные данные");
         }
-        if (user.getName() == null || user.getName().isBlank()){
+        if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
         log.info("добавлен пользователь : {}", user.toString());
@@ -44,7 +45,7 @@ public class UserController {
             log.warn("пользователь имеет неверные данные");
             throw new ValidationException("пользователь имеет неверные данные");
         }
-        if (user.getName() == null || user.getName().isBlank()){
+        if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
         log.info("обновлен пользователь : {}", user.toString());
@@ -52,7 +53,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User findOne(@PathVariable Long id){
+    public User findOne(@PathVariable Long id) {
         if (idValidation(id)) {
             throw new ValidationException("id пользователя введено неверно - " + id);
         }

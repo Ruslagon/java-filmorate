@@ -79,8 +79,10 @@ public class UserService {
 
     public List<User> getFriends(Long id) {
         Set<Long> friendsIds = getFriendsIds(id);
-        return userStorage.getAllItemsList().stream().sorted((user1,user2) -> {int comp = user1.getId().compareTo(user2.getId());
-        return comp;})
+        return userStorage.getAllItemsList().stream().sorted((user1,user2) -> {
+            int comp = user1.getId().compareTo(user2.getId());
+        return comp;
+        } )
                 .filter(user -> friendsIds.contains(user.getId()))
                 .collect(Collectors.toList());
     }

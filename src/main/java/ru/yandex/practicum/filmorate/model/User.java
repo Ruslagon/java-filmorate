@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-public class User extends Item{
+public class User extends Item {
     private Long id;
     @Email
     private String email;

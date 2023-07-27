@@ -16,7 +16,7 @@ public class UserService {
     @Qualifier("inMemoryUser")
     UserStorage userStorage;
 
-    public List<User> findAll(){
+    public List<User> findAll() {
         return userStorage.getAllItemsList();
     }
 

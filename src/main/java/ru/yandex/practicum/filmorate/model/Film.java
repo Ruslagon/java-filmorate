@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-public class Film extends Item{
+public class Film extends Item {
     Long id;
     @NotNull
     @NotBlank

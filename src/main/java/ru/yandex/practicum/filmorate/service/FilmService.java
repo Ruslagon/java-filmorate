@@ -33,6 +33,7 @@ public class FilmService {
     public Film update(Film film) {
         return filmStorage.update(film);
     }
+
     public Film getMovieById(Long id) {
         if (!filmStorage.contains(id)) {
             throw new NotFoundException("Этого фильма не существует" + id);

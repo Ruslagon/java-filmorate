@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
+
     @Autowired
     @Qualifier("inMemoryUser")
     UserStorage userStorage;
@@ -75,6 +76,7 @@ public class UserService {
         }
         return friendsIds;
     }
+
     public List<User> getFriends(Long id) {
         Set<Long> friendsIds = getFriendsIds(id);
         return userStorage.getAllItemsList().stream().sorted((user1,user2) -> {int comp = user1.getId().compareTo(user2.getId());
@@ -89,5 +91,4 @@ public class UserService {
         Set<Long> commonFriendsId = firstUserList.stream().filter(secondUserList::contains).collect(Collectors.toSet());
         return userStorage.getAllItemsList().stream().filter(user -> commonFriendsId.contains(user.getId())).collect(Collectors.toList());
     }
-
 }

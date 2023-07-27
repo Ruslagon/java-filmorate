@@ -51,6 +51,4 @@ db/*
 mvnw.cmd
 mvnw
 
-
-*mvn*.*
 *.DS_Store

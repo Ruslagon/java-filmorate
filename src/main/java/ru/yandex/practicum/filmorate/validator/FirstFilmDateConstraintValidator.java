@@ -14,7 +14,7 @@ public class FirstFilmDateConstraintValidator implements ConstraintValidator<Fir
 
     @Override
     public boolean isValid(LocalDate filmReleaseDate, ConstraintValidatorContext cxt) {
-        if(filmReleaseDate == null) {
+        if (filmReleaseDate == null) {
             return false;
         }
         return !filmReleaseDate.isBefore(earliestFilmDate);

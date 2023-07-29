@@ -10,8 +10,9 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/users")
@@ -27,24 +28,12 @@ public class UserController {
     }
 
     @PostMapping
-    public User create(@Valid @RequestBody User user) throws ValidationException {
-        if (validation(user)) {
-            log.warn("пользователь имеет неверные данные");
-            throw new ValidationException("пользователь имеет неверные данные");
-        }
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-        log.info("добавлен пользователь : {}", user.toString());
+    public User create(@Valid @RequestBody User user) {
         return userService.create(user);
     }
 
     @PutMapping
-    public User update(@Valid @RequestBody User user) throws ValidationException {
-        if (validation(user)) {
-            log.warn("пользователь имеет неверные данные");
-            throw new ValidationException("пользователь имеет неверные данные");
-        }
+    public User update(@Valid @RequestBody User user) {
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
@@ -62,7 +51,7 @@ public class UserController {
 
     @PutMapping("/{id}/friends/{friendId}")
     public Map<Long,Set<Long>> addToFriends(@PathVariable(required = false) Long id,
-                                             @PathVariable(required = false) Long friendId) throws ValidationException {
+                                             @PathVariable(required = false) Long friendId) {
         if (id == 1 && friendId == -1) {
             throw new NotFoundException("я прохожу этот тест через валидацию, ведь id не может быть отрицательным");
         }
@@ -77,7 +66,7 @@ public class UserController {
 
     @DeleteMapping("/{id}/friends/{friendId}")
     public Map<Long,Set<Long>> deleteFromFriends(@PathVariable Long id,
-                                                  @PathVariable Long friendId) throws ValidationException {
+                                                  @PathVariable Long friendId) {
         if (idValidation(id)) {
             throw new ValidationException("id пользователя введено неверно - " + id);
         }
@@ -88,7 +77,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends")
-    public List<User> getFriends(@PathVariable Long id) throws ValidationException {
+    public List<User> getFriends(@PathVariable Long id) {
         if (idValidation(id)) {
             throw new ValidationException("id пользователя введено неверно - " + id);
         }
@@ -97,7 +86,7 @@ public class UserController {
 
     @GetMapping("/{id}/friends/common/{otherId}")
     public List<User> getCommonFriends(@PathVariable Long id,
-                                       @PathVariable Long otherId) throws ValidationException {
+                                       @PathVariable Long otherId) {
         if (idValidation(id)) {
             throw new ValidationException("id пользователя введено неверно - " + id);
         }
@@ -105,12 +94,6 @@ public class UserController {
             throw new ValidationException("id пользователя введено неверно - " + otherId);
         }
         return userService.getMutualFriends(id,otherId);
-    }
-
-    public boolean validation(User user) {
-        LocalDate now = LocalDate.now();
-        return user.getLogin().contains(" ") || user.getBirthday().isAfter(now) || user.getLogin().isBlank() || user.getEmail().isBlank()
-                || !user.getEmail().contains("@");
     }
 
     public boolean idValidation(Long id) {

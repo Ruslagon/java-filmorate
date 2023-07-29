@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorate.model;
 
 public class Item {
 
-    Long id;
+    private Long id;
 
     public Long getId() {
         return id;

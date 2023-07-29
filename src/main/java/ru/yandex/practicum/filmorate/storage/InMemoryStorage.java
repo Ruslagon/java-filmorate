@@ -10,8 +10,8 @@ import java.util.Map;
 
 public class InMemoryStorage<T extends Item> implements Storage<T> {
 
-    Map<Long,T> storage;
-    Long globalId;
+    private final Map<Long,T> storage;
+    private Long globalId;
 
     public InMemoryStorage() {
         storage = new HashMap<>();

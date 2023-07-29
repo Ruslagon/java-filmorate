@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -16,11 +15,9 @@ import java.util.stream.Collectors;
 public class FilmService {
 
     @Autowired
-    @Qualifier("inMemoryFilm")
-    FilmStorage filmStorage;
+    private FilmStorage filmStorage;
     @Autowired
-    @Qualifier("inMemoryUser")
-    UserStorage userStorage;
+    private UserStorage userStorage;
 
     public List<Film> findAll() {
         return filmStorage.getAllItemsList();
@@ -67,18 +64,8 @@ public class FilmService {
 
     public List<Film> getMostPopularFilms(int count) {
         return filmStorage.getAllItemsList().stream().sorted((f1,f2) -> {
-            int f1LikesCount;
-            int f2LikesCount;
-            if (f1.getLikesIds() == null) {
-                f1LikesCount = 0;
-            } else {
-                f1LikesCount = f1.getLikesIds().size();
-            }
-            if (f2.getLikesIds() == null) {
-                f2LikesCount = 0;
-            } else {
-                f2LikesCount = f2.getLikesIds().size();
-            }
+            int f1LikesCount = f1.getCountLike();
+            int f2LikesCount = f2.getCountLike();
             int comp = f2LikesCount - f1LikesCount;
             if (comp == 0) {
                 return f2.getId().compareTo(f1.getId());

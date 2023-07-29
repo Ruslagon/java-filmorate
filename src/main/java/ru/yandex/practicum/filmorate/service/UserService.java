@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -11,17 +11,21 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class UserService {
 
     @Autowired
-    @Qualifier("inMemoryUser")
-    UserStorage userStorage;
+    private UserStorage userStorage;
 
     public List<User> findAll() {
         return userStorage.getAllItemsList();
     }
 
     public User create(User user) {
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
+        log.info("добавлен пользователь : {}", user.toString());
         return userStorage.add(user);
     }
 
@@ -44,10 +48,21 @@ public class UserService {
         if (!userStorage.contains(user2Id)) {
             throw new NotFoundException("this id doesn't exist - " + user2Id);
         }
+
+        User user1 = userStorage.getItem(user1Id);
+        User user2 = userStorage.getItem(user2Id);
+
+        user1.addFriends(user2Id);
+        user2.addFriends(user1Id);
+
+        friendLists.put(user1Id, user1.getFriendsIds());
+        friendLists.put(user2Id, user2.getFriendsIds());
+        /*
         userStorage.getItem(user1Id).addFriends(user2Id);
         userStorage.getItem(user2Id).addFriends(user1Id);
         friendLists.put(user1Id,userStorage.getItem(user1Id).getFriendsIds());
         friendLists.put(user2Id,userStorage.getItem(user2Id).getFriendsIds());
+         */
         return friendLists;
     }
 
@@ -59,10 +74,22 @@ public class UserService {
         if (!userStorage.contains(user2Id)) {
             throw new NotFoundException("this id doesn't exist - " + user2Id);
         }
+        User user1 = userStorage.getItem(user1Id);
+        User user2 = userStorage.getItem(user2Id);
+
+        user1.deleteFriends(user2Id);
+        user2.deleteFriends(user1Id);
+
+        friendLists.put(user1Id, user1.getFriendsIds());
+        friendLists.put(user2Id, user2.getFriendsIds());
+        /*
         userStorage.getItem(user1Id).deleteFriends(user2Id);
         userStorage.getItem(user2Id).deleteFriends(user1Id);
+
         friendLists.put(user1Id,userStorage.getItem(user1Id).getFriendsIds());
         friendLists.put(user2Id,userStorage.getItem(user2Id).getFriendsIds());
+
+         */
         return friendLists;
     }
 

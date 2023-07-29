@@ -1,11 +1,10 @@
 package ru.yandex.practicum.filmorate.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,13 +13,18 @@ import java.util.Set;
 public class User extends Item {
     private Long id;
     @Email
+    @NotEmpty
     private String email;
     private String name;
-    @NotNull
     @NotBlank
+    @Pattern(regexp = "^[^\\u0020]+$", message = "логин не должен содержать пробелов")
     private String login;
+    @NotNull
+    @PastOrPresent
     private LocalDate birthday;
+    @JsonIgnore
     private Set<Long> friendsIds;
+    @JsonIgnore
     private Set<Long> likedFilms;
 
     public User(String email, String login, LocalDate birthday) {

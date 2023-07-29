@@ -24,7 +24,7 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<String> wrongDataException(ConstraintViolationException e){
+    public ResponseEntity<String> wrongDataException(ConstraintViolationException e) {
         log.debug("Получен статус 400 Bad Request {}", e.getMessage(), e);
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }

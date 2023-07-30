@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -18,9 +17,9 @@ import java.util.Set;
 @RequestMapping("/users")
 
 public class UserController {
-    Logger log = (Logger) LoggerFactory.getLogger(UserController.class);
+    private Logger log = (Logger) LoggerFactory.getLogger(UserController.class);
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @GetMapping
     public List<User> findAll() {
@@ -44,7 +43,7 @@ public class UserController {
     @GetMapping("/{id}")
     public User findOne(@PathVariable Long id) {
         if (idValidation(id)) {
-            throw new ValidationException("id пользователя введено неверно - " + id);
+            throw new NotFoundException("id пользователя введено неверно - " + id);
         }
         return userService.getUserById(id);
     }
@@ -52,14 +51,11 @@ public class UserController {
     @PutMapping("/{id}/friends/{friendId}")
     public Map<Long,Set<Long>> addToFriends(@PathVariable(required = false) Long id,
                                              @PathVariable(required = false) Long friendId) {
-        if (id == 1 && friendId == -1) {
-            throw new NotFoundException("я прохожу этот тест через валидацию, ведь id не может быть отрицательным");
-        }
         if (idValidation(id)) {
-            throw new ValidationException("id пользователя введено неверно - " + id);
+            throw new NotFoundException("id пользователя введено неверно - " + id);
         }
         if (idValidation(friendId)) {
-            throw new ValidationException("id пользователя введено неверно - " + friendId);
+            throw new NotFoundException("id пользователя введено неверно - " + friendId);
         }
         return userService.addFriend(id,friendId);
     }
@@ -68,10 +64,10 @@ public class UserController {
     public Map<Long,Set<Long>> deleteFromFriends(@PathVariable Long id,
                                                   @PathVariable Long friendId) {
         if (idValidation(id)) {
-            throw new ValidationException("id пользователя введено неверно - " + id);
+            throw new NotFoundException("id пользователя введено неверно - " + id);
         }
         if (idValidation(friendId)) {
-            throw new ValidationException("id пользователя введено неверно - " + friendId);
+            throw new NotFoundException("id пользователя введено неверно - " + friendId);
         }
         return userService.deleteFromFriends(id, friendId);
     }
@@ -79,7 +75,7 @@ public class UserController {
     @GetMapping("/{id}/friends")
     public List<User> getFriends(@PathVariable Long id) {
         if (idValidation(id)) {
-            throw new ValidationException("id пользователя введено неверно - " + id);
+            throw new NotFoundException("id пользователя введено неверно - " + id);
         }
         return userService.getFriends(id);
     }
@@ -88,10 +84,10 @@ public class UserController {
     public List<User> getCommonFriends(@PathVariable Long id,
                                        @PathVariable Long otherId) {
         if (idValidation(id)) {
-            throw new ValidationException("id пользователя введено неверно - " + id);
+            throw new NotFoundException("id пользователя введено неверно - " + id);
         }
         if (idValidation(otherId)) {
-            throw new ValidationException("id пользователя введено неверно - " + otherId);
+            throw new NotFoundException("id пользователя введено неверно - " + otherId);
         }
         return userService.getMutualFriends(id,otherId);
     }

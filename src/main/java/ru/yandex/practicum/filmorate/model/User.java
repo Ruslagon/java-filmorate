@@ -17,15 +17,15 @@ public class User extends Item {
     private String email;
     private String name;
     @NotBlank
-    @Pattern(regexp = "^[^\\u0020]+$", message = "логин не должен содержать пробелов")
+    @Pattern(regexp = "\\S+", message = "логин не должен содержать пробелов")
     private String login;
     @NotNull
     @PastOrPresent
     private LocalDate birthday;
     @JsonIgnore
-    private Set<Long> friendsIds;
+    private Set<Long> friendsIds = new HashSet<>();
     @JsonIgnore
-    private Set<Long> likedFilms;
+    private Set<Long> likedFilms = new HashSet<>();
 
     public User(String email, String login, LocalDate birthday) {
         this.email = email;
@@ -34,9 +34,6 @@ public class User extends Item {
     }
 
     public void addFriends(Long friendId) {
-        if (friendsIds == null) {
-            friendsIds = new HashSet<>();
-        }
         if (id.equals(friendId)) {
             throw new ValidationException("Нельзя добавлять в друзья самого себя");
         }
@@ -44,23 +41,14 @@ public class User extends Item {
     }
 
     public void deleteFriends(Long strangerId) {
-        if (friendsIds == null) {
-            friendsIds = new HashSet<>();
-        }
         friendsIds.remove(strangerId);
     }
 
     public void addLikedFilm(Long filmId) {
-        if (likedFilms == null) {
-            likedFilms = new HashSet<>();
-        }
         likedFilms.add(filmId);
     }
 
     public void deleteLikedFilm(Long filmId) {
-        if (likedFilms == null) {
-            likedFilms = new HashSet<>();
-        }
         likedFilms.remove(filmId);
     }
 }

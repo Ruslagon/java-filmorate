@@ -22,14 +22,13 @@ public class UserService {
     }
 
     public User create(User user) {
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
+        nameFix(user);
         log.info("добавлен пользователь : {}", user.toString());
         return userStorage.add(user);
     }
 
     public User update(User user) {
+        nameFix(user);
         return userStorage.update(user);
     }
 
@@ -57,12 +56,6 @@ public class UserService {
 
         friendLists.put(user1Id, user1.getFriendsIds());
         friendLists.put(user2Id, user2.getFriendsIds());
-        /*
-        userStorage.getItem(user1Id).addFriends(user2Id);
-        userStorage.getItem(user2Id).addFriends(user1Id);
-        friendLists.put(user1Id,userStorage.getItem(user1Id).getFriendsIds());
-        friendLists.put(user2Id,userStorage.getItem(user2Id).getFriendsIds());
-         */
         return friendLists;
     }
 
@@ -82,14 +75,6 @@ public class UserService {
 
         friendLists.put(user1Id, user1.getFriendsIds());
         friendLists.put(user2Id, user2.getFriendsIds());
-        /*
-        userStorage.getItem(user1Id).deleteFriends(user2Id);
-        userStorage.getItem(user2Id).deleteFriends(user1Id);
-
-        friendLists.put(user1Id,userStorage.getItem(user1Id).getFriendsIds());
-        friendLists.put(user2Id,userStorage.getItem(user2Id).getFriendsIds());
-
-         */
         return friendLists;
     }
 
@@ -117,5 +102,11 @@ public class UserService {
         Set<Long> secondUserList = getFriendsIds(user2Id);
         Set<Long> commonFriendsId = firstUserList.stream().filter(secondUserList::contains).collect(Collectors.toSet());
         return userStorage.getAllItemsList().stream().filter(user -> commonFriendsId.contains(user.getId())).collect(Collectors.toList());
+    }
+
+    private void nameFix(User user){
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
     }
 }

@@ -44,7 +44,7 @@ public class FilmController {
     @GetMapping("/{id}")
     public Film findOne(@PathVariable Long id) {
         if (idValidation(id)) {
-            throw new ValidationException("id фильма введено неверно - " + id);
+            throw new NotFoundException("id фильма введено неверно - " + id);
         }
         return filmService.getMovieById(id);
     }
@@ -52,24 +52,21 @@ public class FilmController {
     @PutMapping("/{id}/like/{userId}")
     public Set<Long> likeFilm(@PathVariable(value = "id") Long filmId, @PathVariable Long userId) {
         if (idValidation(filmId)) {
-            throw new ValidationException("id фильма введено неверно - " + filmId);
+            throw new NotFoundException("id фильма введено неверно - " + filmId);
         }
         if (idValidation(userId)) {
-            throw new ValidationException("id пользователя введено неверно - " + filmId);
+            throw new NotFoundException("id пользователя введено неверно - " + filmId);
         }
         return filmService.likeFilm(filmId, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
     public Set<Long> deleteLike(@PathVariable(value = "id") Long filmId, @PathVariable Long userId) {
-        if (filmId == 1 && userId == -2) {
-            throw new NotFoundException("я прохожу этот тест через валидацию, ведь id не может быть отрицательным");
-        }
         if (idValidation(filmId)) {
-            throw new ValidationException("id фильма введено неверно - " + filmId);
+            throw new NotFoundException("id фильма введено неверно - " + filmId);
         }
         if (idValidation(userId)) {
-            throw new ValidationException("id пользователя введено неверно - " + userId);
+            throw new NotFoundException("id пользователя введено неверно - " + userId);
         }
         return filmService.deleteFilmsLike(filmId, userId);
     }

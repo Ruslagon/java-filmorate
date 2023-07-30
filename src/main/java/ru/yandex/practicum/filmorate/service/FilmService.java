@@ -45,9 +45,10 @@ public class FilmService {
         if (!userStorage.contains(userId)) {
             throw new NotFoundException("this id doesn't exist - " + userId);
         }
-        filmStorage.getItem(filmId).addLike(userId);
+        Film film = filmStorage.getItem(filmId);
+        film.addLike(userId);
         userStorage.getItem(userId).addLikedFilm(filmId);
-        return filmStorage.getItem(filmId).getLikesIds();
+        return film.getLikesIds();
     }
 
     public Set<Long> deleteFilmsLike(Long filmId, Long userId) {
@@ -57,9 +58,10 @@ public class FilmService {
         if (!userStorage.contains(userId)) {
             throw new NotFoundException("this id doesn't exist - " + userId);
         }
-        filmStorage.getItem(filmId).deleteLike(userId);
+        Film film = filmStorage.getItem(filmId);
+        film.deleteLike(userId);
         userStorage.getItem(userId).deleteLikedFilm(filmId);
-        return filmStorage.getItem(filmId).getLikesIds();
+        return film.getLikesIds();
     }
 
     public List<Film> getMostPopularFilms(int count) {

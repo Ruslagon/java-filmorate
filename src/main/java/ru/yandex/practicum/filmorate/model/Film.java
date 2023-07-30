@@ -23,7 +23,7 @@ public class Film extends Item {
     @Positive
     private int duration;
     @JsonIgnore
-    private Set<Long> likesIds;
+    private Set<Long> likesIds = new HashSet<>();
 
     public Film(String name, String description, LocalDate releaseDate, int duration) {
         this.name = name;
@@ -44,23 +44,14 @@ public class Film extends Item {
     }
 
     public void addLike(Long id) {
-        if (likesIds == null) {
-            likesIds = new HashSet<>();
-        }
         likesIds.add(id);
     }
 
     public void deleteLike(Long id) {
-        if (likesIds == null) {
-            likesIds = new HashSet<>();
-        }
         likesIds.remove(id);
     }
 
     public int getCountLike() {
-        if (likesIds == null) {
-            return 0;
-        }
         return likesIds.size();
     }
 }

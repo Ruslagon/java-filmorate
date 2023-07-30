@@ -104,7 +104,7 @@ public class UserService {
         return userStorage.getAllItemsList().stream().filter(user -> commonFriendsId.contains(user.getId())).collect(Collectors.toList());
     }
 
-    private void nameFix(User user){
+    private void nameFix(User user) {
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }

@@ -1,14 +1,4 @@
-*.class
-*.log
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
-hs_err_pid*
-out/
+HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
@@ -41,21 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-*.db
-db/*
-
-
-### Project ###
-.mvn
-mvnw.cmd
-mvnw
-filmorate.iml
-.rar
-hs_err_pid
-!/src/main//target/
-
-*mvn*
-*mvn*.*
-mvnw.*
-src/main/assets/images/база_данных_filmorate.jpg

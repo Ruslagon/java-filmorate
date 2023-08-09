@@ -24,7 +24,7 @@ public class User extends Item {
     @PastOrPresent
     private LocalDate birthday;
     @JsonIgnore
-    private HashMap<Long,FriendshipStatus> friends = new HashMap<>();
+    private HashMap<Long, FriendShipStatus> friends = new HashMap<>();
     @JsonIgnore
     private Set<Long> likedFilms = new HashSet<>();
 
@@ -34,7 +34,7 @@ public class User extends Item {
         this.birthday = birthday;
     }
 
-    public void addFriends(Long friendId, FriendshipStatus status) {
+    public void addFriends(Long friendId, FriendShipStatus status) {
         if (id.equals(friendId)) {
             throw new ValidationException("Нельзя добавлять в друзья самого себя");
         }
@@ -45,7 +45,7 @@ public class User extends Item {
         friends.remove(strangerId);
     }
 
-    public FriendshipStatus getFriendshipStatus(Long otherUserId) {
+    public FriendShipStatus getFriendshipStatus(Long otherUserId) {
         if (!friends.containsKey(otherUserId)) {
             return null;
         }

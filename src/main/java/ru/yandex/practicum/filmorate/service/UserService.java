@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.model.FriendshipStatus;
+import ru.yandex.practicum.filmorate.model.FriendShipStatus;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -40,8 +40,8 @@ public class UserService {
         return userStorage.getItem(id);
     }
 
-    public Map<Long, Map<Long, FriendshipStatus>> addFriend(Long user1Id, Long user2Id) {
-        Map<Long, Map<Long,FriendshipStatus>> friendLists = new HashMap<>();
+    public Map<Long, Map<Long, FriendShipStatus>> addFriend(Long user1Id, Long user2Id) {
+        Map<Long, Map<Long, FriendShipStatus>> friendLists = new HashMap<>();
         if (!userStorage.contains(user1Id)) {
             throw new NotFoundException("this id doesn't exist - " + user1Id);
         }
@@ -52,16 +52,16 @@ public class UserService {
         User user1 = userStorage.getItem(user1Id);
         User user2 = userStorage.getItem(user2Id);
 
-        FriendshipStatus user2Status = user2.getFriendshipStatus(user1Id);
+        FriendShipStatus user2Status = user2.getFriendshipStatus(user1Id);
         if (user2Status == null) {
-            user1.addFriends(user2Id,FriendshipStatus.UNCONFIRMED);
+            user1.addFriends(user2Id, FriendShipStatus.UNCONFIRMED);
         }
-        if (user2Status == FriendshipStatus.UNCONFIRMED) {
-            user1.addFriends(user2Id,FriendshipStatus.CONFIRMED);
-            user2.addFriends(user1Id,FriendshipStatus.CONFIRMED);
+        if (user2Status == FriendShipStatus.UNCONFIRMED) {
+            user1.addFriends(user2Id, FriendShipStatus.CONFIRMED);
+            user2.addFriends(user1Id, FriendShipStatus.CONFIRMED);
         }
-        if (user2Status == FriendshipStatus.CONFIRMED) {
-            user1.addFriends(user2Id, FriendshipStatus.CONFIRMED);
+        if (user2Status == FriendShipStatus.CONFIRMED) {
+            user1.addFriends(user2Id, FriendShipStatus.CONFIRMED);
         }
 
         friendLists.put(user1Id, user1.getFriends());
@@ -69,8 +69,8 @@ public class UserService {
         return friendLists;
     }
 
-    public Map<Long,Map<Long, FriendshipStatus>> deleteFromFriends(Long user1Id, Long user2Id) {
-        Map<Long,Map<Long, FriendshipStatus>> friendLists = new HashMap<>();
+    public Map<Long,Map<Long, FriendShipStatus>> deleteFromFriends(Long user1Id, Long user2Id) {
+        Map<Long,Map<Long, FriendShipStatus>> friendLists = new HashMap<>();
         if (!userStorage.contains(user1Id)) {
             throw new NotFoundException("this id doesn't exist - " + user1Id);
         }
@@ -93,7 +93,7 @@ public class UserService {
             throw new NotFoundException("this id doesn't exist - " + id);
         }
         List<Long> friendsIds = userStorage.getItem(id).getFriends().entrySet().stream()
-                .filter(longFriendshipStatusEntry -> longFriendshipStatusEntry.getValue().equals(FriendshipStatus.CONFIRMED))
+                .filter(longFriendshipStatusEntry -> longFriendshipStatusEntry.getValue().equals(FriendShipStatus.CONFIRMED))
                 .map(Map.Entry::getKey).collect(Collectors.toList());;
         return friendsIds;
     }

@@ -5,13 +5,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.model.FriendshipStatus;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/users")
@@ -49,8 +49,8 @@ public class UserController {
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public Map<Long,Set<Long>> addToFriends(@PathVariable(required = false) Long id,
-                                             @PathVariable(required = false) Long friendId) {
+    public Map<Long,Map<Long, FriendshipStatus>> addToFriends(@PathVariable(required = false) Long id,
+                                                              @PathVariable(required = false) Long friendId) {
         if (idValidation(id)) {
             throw new NotFoundException("id пользователя введено неверно - " + id);
         }
@@ -61,7 +61,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
-    public Map<Long,Set<Long>> deleteFromFriends(@PathVariable Long id,
+    public Map<Long,Map<Long, FriendshipStatus>> deleteFromFriends(@PathVariable Long id,
                                                   @PathVariable Long friendId) {
         if (idValidation(id)) {
             throw new NotFoundException("id пользователя введено неверно - " + id);

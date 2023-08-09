@@ -94,7 +94,7 @@ public class UserService {
         }
         List<Long> friendsIds = userStorage.getItem(id).getFriends().entrySet().stream()
                 .filter(longFriendshipStatusEntry -> longFriendshipStatusEntry.getValue().equals(FriendShipStatus.CONFIRMED))
-                .map(Map.Entry::getKey).collect(Collectors.toList());;
+                .map(Map.Entry::getKey).collect(Collectors.toList());
         return friendsIds;
     }
 

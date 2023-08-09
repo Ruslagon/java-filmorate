@@ -6,7 +6,6 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,7 +23,7 @@ public class User extends Item {
     @PastOrPresent
     private LocalDate birthday;
     @JsonIgnore
-    private HashMap<Long,FriendshipStatus> friends = new HashMap<>();
+    private Set<Long> friendsIds = new HashSet<>();
     @JsonIgnore
     private Set<Long> likedFilms = new HashSet<>();
 
@@ -34,22 +33,15 @@ public class User extends Item {
         this.birthday = birthday;
     }
 
-    public void addFriends(Long friendId, FriendshipStatus status) {
+    public void addFriends(Long friendId) {
         if (id.equals(friendId)) {
             throw new ValidationException("Нельзя добавлять в друзья самого себя");
         }
-        friends.put(friendId, status);
+        friendsIds.add(friendId);
     }
 
     public void deleteFriends(Long strangerId) {
-        friends.remove(strangerId);
-    }
-
-    public FriendshipStatus getFriendshipStatus(Long otherUserId) {
-        if (!friends.containsKey(otherUserId)) {
-            return null;
-        }
-        return friends.get(otherUserId);
+        friendsIds.remove(strangerId);
     }
 
     public void addLikedFilm(Long filmId) {

@@ -25,10 +25,6 @@ public class Film extends Item {
     @JsonIgnore
     private Set<Long> likesIds = new HashSet<>();
 
-    private Set<Genre> genres = new HashSet<>();
-
-    private Rating rating;
-
     public Film(String name, String description, LocalDate releaseDate, int duration) {
         this.name = name;
         this.description = description;

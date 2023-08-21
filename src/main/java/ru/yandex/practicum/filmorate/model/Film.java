@@ -10,6 +10,7 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 @Data
 public class Film extends Item {
@@ -24,10 +25,8 @@ public class Film extends Item {
     private int duration;
     @JsonIgnore
     private Set<Long> likesIds = new HashSet<>();
-
-    private Set<Genre> genres = new HashSet<>();
-
-    private Rating rating;
+    private Set<Genre> genres =  new TreeSet<>((Genre g1, Genre g2) -> g1.getId() - g2.getId());
+    private Mpa mpa;
 
     public Film(String name, String description, LocalDate releaseDate, int duration) {
         this.name = name;
@@ -57,5 +56,14 @@ public class Film extends Item {
 
     public int getCountLike() {
         return likesIds.size();
+    }
+
+    public void setGenres(Set<Genre> genres) {
+        this.genres.clear();
+        for (Genre genre : genres) {
+            if (!this.genres.contains(genre)) {
+                this.genres.add(genre);
+            }
+        }
     }
 }

@@ -83,6 +83,9 @@ public class UserService {
         user1.deleteFriends(user2Id);
         user2.deleteFriends(user1Id);
 
+        userStorage.update(user1);
+        userStorage.update(user2);
+
         friendLists.put(user1Id, user1.getFriends());
         friendLists.put(user2Id, user2.getFriends());
         return friendLists;
@@ -92,9 +95,10 @@ public class UserService {
         if (!userStorage.contains(id)) {
             throw new NotFoundException("this id doesn't exist - " + id);
         }
-        List<Long> friendsIds = userStorage.getItem(id).getFriends().entrySet().stream()
-                .filter(longFriendshipStatusEntry -> longFriendshipStatusEntry.getValue().equals(FriendShipStatus.CONFIRMED))
-                .map(Map.Entry::getKey).collect(Collectors.toList());
+        List<Long> friendsIds = new ArrayList<>(userStorage.getItem(id).getFriends().keySet());
+//      List<Long> friendsIds = userStorage.getItem(id).getFriends().entrySet().stream()
+//                .filter(longFriendshipStatusEntry -> longFriendshipStatusEntry.getValue().equals(FriendShipStatus.CONFIRMED))
+//                .map(Map.Entry::getKey).collect(Collectors.toList());
         return friendsIds;
     }
 

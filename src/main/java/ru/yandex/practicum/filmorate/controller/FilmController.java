@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
@@ -18,30 +20,30 @@ import java.util.Set;
 @Slf4j
 @RestController
 @Validated
-@RequestMapping("/films")
+@RequestMapping
 public class FilmController {
     private final LocalDate earliestFilmDate = LocalDate.of(1895,12,28);
     @Autowired
     private FilmService filmService;
 
-    @GetMapping
+    @GetMapping("/films")
     public List<Film> findAll() {
         return filmService.findAll();
     }
 
-    @PostMapping
+    @PostMapping("/films")
     public Film create(@Valid @RequestBody Film film) {
         log.info("добавлен фильм: {}", film.toString());
         return filmService.create(film);
     }
 
-    @PutMapping
+    @PutMapping("/films")
     public Film update(@Valid @RequestBody Film film) {
         log.info("данные фильма обновлены : {}", film.toString());
         return filmService.update(film);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/films/{id}")
     public Film findOne(@PathVariable Long id) {
         if (idValidation(id)) {
             throw new NotFoundException("id фильма введено неверно - " + id);
@@ -49,7 +51,7 @@ public class FilmController {
         return filmService.getMovieById(id);
     }
 
-    @PutMapping("/{id}/like/{userId}")
+    @PutMapping("/films/{id}/like/{userId}")
     public Set<Long> likeFilm(@PathVariable(value = "id") Long filmId, @PathVariable Long userId) {
         if (idValidation(filmId)) {
             throw new NotFoundException("id фильма введено неверно - " + filmId);
@@ -60,7 +62,7 @@ public class FilmController {
         return filmService.likeFilm(filmId, userId);
     }
 
-    @DeleteMapping("/{id}/like/{userId}")
+    @DeleteMapping("/films/{id}/like/{userId}")
     public Set<Long> deleteLike(@PathVariable(value = "id") Long filmId, @PathVariable Long userId) {
         if (idValidation(filmId)) {
             throw new NotFoundException("id фильма введено неверно - " + filmId);
@@ -71,12 +73,30 @@ public class FilmController {
         return filmService.deleteFilmsLike(filmId, userId);
     }
 
-    @GetMapping("/popular")
+    @GetMapping("/films/popular")
     public List<Film> getMostPopularFilms(@RequestParam(value = "count", defaultValue = "10")@Positive int count) {
         if (idValidation((long)count)) {
             throw new ValidationException("count введен неверно -" + count);
         }
         return filmService.getMostPopularFilms(count);
+    }
+
+    @GetMapping("/mpa")
+    public Set<Mpa> getAllMpa() {
+        return filmService.getAllMpa();
+    }
+    @GetMapping("/mpa/{id}")
+    public Mpa getMpaById(@PathVariable int id) {
+        return filmService.getMpaById(id);
+    }
+
+    @GetMapping("/genres")
+    public Set<Genre> getAllGenre() {
+        return filmService.getAllGenre();
+    }
+    @GetMapping("/genres/{id}")
+    public Genre getGenreById(@PathVariable int id) {
+        return filmService.getGenreById(id);
     }
 
     public boolean idValidation(Long id) {

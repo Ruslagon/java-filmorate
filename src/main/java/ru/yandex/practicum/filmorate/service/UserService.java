@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.FriendShipStatus;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     @Autowired
+    @Qualifier("UserDb")
     private UserStorage userStorage;
 
     public List<User> findAll() {
@@ -64,8 +66,14 @@ public class UserService {
             user1.addFriends(user2Id, FriendShipStatus.CONFIRMED);
         }
 
+        userStorage.update(user1);
+        userStorage.update(user2);
+
         friendLists.put(user1Id, user1.getFriends());
         friendLists.put(user2Id, user2.getFriends());
+
+//        friendLists.put(user1Id, userStorage.getItem(user1Id).getFriends());
+//        friendLists.put(user2Id, userStorage.getItem(user2Id).getFriends());
         return friendLists;
     }
 
@@ -96,9 +104,6 @@ public class UserService {
             throw new NotFoundException("this id doesn't exist - " + id);
         }
         List<Long> friendsIds = new ArrayList<>(userStorage.getItem(id).getFriends().keySet());
-//      List<Long> friendsIds = userStorage.getItem(id).getFriends().entrySet().stream()
-//                .filter(longFriendshipStatusEntry -> longFriendshipStatusEntry.getValue().equals(FriendShipStatus.CONFIRMED))
-//                .map(Map.Entry::getKey).collect(Collectors.toList());
         return friendsIds;
     }
 

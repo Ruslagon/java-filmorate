@@ -31,7 +31,7 @@ public class InMemoryStorage<T extends Item> implements Storage<T> {
     }
 
     public T update(T item) {
-        if (contains(item)) {
+        if (contains(item.getId())) {
             storage.put(item.getId(),item);
         } else {
             throw new NotFoundException("item with id doesn't exist - " + item.getId());
@@ -39,9 +39,9 @@ public class InMemoryStorage<T extends Item> implements Storage<T> {
         return item;
     }
 
-    public boolean contains(T item) {
-        return storage.containsKey(item.getId());
-    }
+//    public boolean contains(T item) {
+//        return storage.containsKey(item.getId());
+//    }
 
     public boolean contains(Long id) {
         return storage.containsKey(id);

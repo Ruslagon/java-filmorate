@@ -5,6 +5,14 @@ public class Mpa {
     private int id;
     private String name;
 
+    public Mpa(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Mpa() {
+    }
+
     public int getId() {
         return id;
     }
@@ -32,5 +40,9 @@ public class Mpa {
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

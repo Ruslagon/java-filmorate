@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -16,15 +17,19 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 @Service
+
 public class FilmService {
 
     @Autowired
+    @Qualifier("FilmDb")
     private FilmStorage filmStorage;
     @Autowired
+    @Qualifier("UserDb")
     private UserStorage userStorage;
 
     public List<Film> findAll() {
-        return filmStorage.getAllItemsList();
+        return filmStorage.getAllItemsList().stream()
+                .sorted((Film f1, Film f2) -> {return f1.getId().compareTo(f2.getId());}).collect(Collectors.toList());
     }
 
     public Film create(Film film) {
@@ -51,7 +56,8 @@ public class FilmService {
         }
         Film film = filmStorage.getItem(filmId);
         film.addLike(userId);
-        userStorage.getItem(userId).addLikedFilm(filmId);
+        filmStorage.update(film);
+        //userStorage.getItem(userId).addLikedFilm(filmId);
         return film.getLikesIds();
     }
 
@@ -64,7 +70,16 @@ public class FilmService {
         }
         Film film = filmStorage.getItem(filmId);
         film.deleteLike(userId);
-        userStorage.getItem(userId).deleteLikedFilm(filmId);
+        filmStorage.update(film);
+//        Set<Long> filmLikes = film.getLikesIds();
+//        if (filmLikes.remove(userId)) {
+//            film.setLikesIds(filmLikes);
+//            filmStorage.update(film);
+//        } else {
+//            throw new NotFoundException("нет лайка юзера - " + userId);
+//        }
+        //filmStorage.update(film);
+        //userStorage.getItem(userId).deleteLikedFilm(filmId);
         return film.getLikesIds();
     }
 

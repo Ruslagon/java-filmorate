@@ -56,6 +56,7 @@ public class FilmService {
         }
         Film film = filmStorage.getItem(filmId);
         film.addLike(userId);
+        filmStorage.update(film);
         //userStorage.getItem(userId).addLikedFilm(filmId);
         return film.getLikesIds();
     }
@@ -69,6 +70,15 @@ public class FilmService {
         }
         Film film = filmStorage.getItem(filmId);
         film.deleteLike(userId);
+        filmStorage.update(film);
+//        Set<Long> filmLikes = film.getLikesIds();
+//        if (filmLikes.remove(userId)) {
+//            film.setLikesIds(filmLikes);
+//            filmStorage.update(film);
+//        } else {
+//            throw new NotFoundException("нет лайка юзера - " + userId);
+//        }
+        //filmStorage.update(film);
         //userStorage.getItem(userId).deleteLikedFilm(filmId);
         return film.getLikesIds();
     }

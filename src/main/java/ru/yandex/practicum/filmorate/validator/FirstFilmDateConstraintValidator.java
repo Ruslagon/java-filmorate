@@ -2,10 +2,9 @@ package ru.yandex.practicum.filmorate.validator;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.sql.Date;
 import java.time.LocalDate;
 
-public class FirstFilmDateConstraintValidator implements ConstraintValidator<FirstFilmDate, Date> {
+public class FirstFilmDateConstraintValidator implements ConstraintValidator<FirstFilmDate, LocalDate> {
     private static final LocalDate earliestFilmDate = LocalDate.of(1895,12,28);
 
     @Override
@@ -14,11 +13,11 @@ public class FirstFilmDateConstraintValidator implements ConstraintValidator<Fir
     }
 
     @Override
-    public boolean isValid(Date filmReleaseDate, ConstraintValidatorContext cxt) {
+    public boolean isValid(LocalDate filmReleaseDate, ConstraintValidatorContext cxt) {
         if (filmReleaseDate == null) {
             return false;
         }
-        return !filmReleaseDate.before(java.sql.Date.valueOf(earliestFilmDate));
+        return !filmReleaseDate.isBefore(earliestFilmDate);
     }
 
 }

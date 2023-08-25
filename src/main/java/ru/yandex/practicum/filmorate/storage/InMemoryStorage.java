@@ -25,9 +25,8 @@ public class InMemoryStorage<T extends Item> implements Storage<T> {
         return item;
     }
 
-    public T delete(T item) {
-        storage.remove(item);
-        return item;
+    public void delete(Long id) {
+        storage.remove(id);
     }
 
     public T update(T item) {

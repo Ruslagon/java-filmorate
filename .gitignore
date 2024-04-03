@@ -42,19 +42,10 @@ build/
 ### VS Code ###
 .vscode/
 
-*.db
-db/*
 
-
-### Project ###
-.mvn
-mvnw.cmd
 mvnw
 filmorate.iml
 .rar
 hs_err_pid
 !/src/main//target/
 
-*mvn*
-*mvn*.*
-mvnw.*

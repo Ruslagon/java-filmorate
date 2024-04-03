@@ -3,6 +3,9 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Getter
 @Setter
 public class Genre {
@@ -40,5 +43,16 @@ public class Genre {
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Map<String, Object> genresToMapBd (long id) {
+        Map<String, Object> values = new HashMap<>();
+        values.put("FILM_ID", id);
+        values.put("GENRE_ID", id);
+        return values;
     }
 }

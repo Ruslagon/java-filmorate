@@ -6,7 +6,7 @@ public interface Storage<T> {
 
     T add(T t);
 
-    T delete(T t);
+    void delete(Long id);
 
     T update(T t);
 

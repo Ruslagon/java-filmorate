@@ -1,14 +1,28 @@
 package ru.yandex.practicum.filmorate;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.storage.UserDbStorage;
 
 @SpringBootTest
+@AutoConfigureTestDatabase
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 class FilmorateApplicationTests {
 
+	private final UserDbStorage userStorage;
+
 	@Test
-	void validationFilm() throws ValidationException {
+	public void testFindUserById() {
+
+//		Optional<User> userOptional = Optional.of(userStorage.getItem(1L));
+//
+//		assertThat(userOptional).isPresent().hasValueSatisfying(user -> assertThat(user).hasFieldOrPropertyWithValue("id", 1));}
+
+//	@Test
+//	void validationFilm() throws ValidationException {
 		/*
 		FilmController controller = new FilmController();
 		LocalDate beforeFirstMovieDate = LocalDate.of(1895,12,27);
@@ -35,10 +49,10 @@ class FilmorateApplicationTests {
 		Exception ex = new Exception("hi");
 		assertThrows(Exception.class, () -> {filmChecker.setDuration(minusDuration);});
 		 */
-	}
+	//}
 
-	@Test
-	void validationUser() throws ValidationException {
+//	@Test
+//	void validationUser() throws ValidationException {
 		/*
 		LocalDate past = LocalDate.of(1895,12,27);
 		LocalDate future = LocalDate.of(2077,12,27);
@@ -54,10 +68,10 @@ class FilmorateApplicationTests {
 		assertTrue(controller.validation(new User(email,blankLogin,past)));
 		assertTrue(controller.validation(new User(email,login,future)));
 		 */
-	}
-
-	@Test
-	void contextLoads() {
+//	}
+//
+//	@Test
+//	void contextLoads() {
 	}
 
 }

@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.validator.FirstFilmDate;
 
@@ -8,11 +7,10 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 @Data
+//@Builder
 public class Film extends Item {
     private Long id;
     @NotBlank
@@ -23,7 +21,7 @@ public class Film extends Item {
     private LocalDate releaseDate;
     @Positive
     private int duration;
-    @JsonIgnore
+
     private Set<Long> likesIds = new HashSet<>();
     private Set<Genre> genres =  new TreeSet<>((Genre g1, Genre g2) -> g1.getId() - g2.getId());
     private Mpa mpa;
@@ -65,5 +63,15 @@ public class Film extends Item {
                 this.genres.add(genre);
             }
         }
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> values = new HashMap<>();
+        values.put("FILM_NAME", name);
+        values.put("DESCRIPTION", description);
+        values.put("RELEASE_DATE", releaseDate);
+        values.put("DURATION", duration);
+        values.put("RATING_ID",mpa.getId());
+        return values;
     }
 }
